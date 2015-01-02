@@ -1,12 +1,12 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: 
+" Maintainer:
 "       Amir Salihefendic
 "       http://amix.dk - amix@amix.dk
 "
-" Version: 
+" Version:
 "       5.0 - 29/05/12 15:43:36
 "
-" Blog_post: 
+" Blog_post:
 "       http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
 "
 " Awesome_version:
@@ -19,7 +19,7 @@
 " Syntax_highlighted:
 "       http://amix.dk/vim/vimrc.html
 "
-" Raw_version: 
+" Raw_version:
 "       http://amix.dk/vim/vimrc.txt
 "
 " Sections:
@@ -81,7 +81,7 @@ set wildignore=*.o,*~,*.pyc
 set ruler
 
 " Height of the command bar
-set cmdheight=2
+set cmdheight=1
 
 " A buffer becomes hidden when it is abandoned
 set hid
@@ -90,10 +90,7 @@ set hid
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
-" Ignore case when searching
-set ignorecase
-
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
@@ -128,13 +125,69 @@ syntax enable
 
 colorscheme desert
 set background=dark
+set t_Co=256
+
+    "the cursor color in normal mode
+    hi Cursor guifg=White guibg=green
+
+    "the cursor color in insert mode
+    hi iCursor guifg=White guibg=red
+
+    "the cursor shape in normal visual command mode
+    set guicursor=n-v:block-Cursor
+
+    "the cursor shape in insert, command, and command- insert mode
+    set guicursor+=i-c-ci:ver25-iCursor
+
+    "the cursor shape in operator mode
+    set guicursor+=o:ver100-iCursor
+
+    "the cursor shape in replace mode
+    set guicursor+=r-cr:hor20-iCursor
+
+    "disable cursor blinking
+    set guicursor+=a:blinkon0
+hi Comment      guifg=#dddddd gui=italic ctermfg=246 ctermbg=none cterm=NONE
+"hi Todo         guifg=#8f8f8f gui=italic ctermfg=245 ctermbg=none cterm=NONE
+"hi Constant     guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
+"hi String       guifg=#95e454 gui=italic ctermfg=113 ctermbg=none cterm=NONE
+hi Identifier   guifg=#cae682 gui=none ctermfg=150 ctermbg=none cterm=none
+hi Function     guifg=LightGreen   gui=none ctermfg=150 ctermbg=none cterm=none
+"hi Type         guifg=#cae682 gui=none ctermfg=150 ctermbg=none cterm=none
+"hi Statement    guifg=#8ac6f2 gui=none ctermfg=117 ctermbg=none cterm=none
+hi Keyword      guifg=#8ac6f2 gui=none ctermfg=117 ctermbg=none cterm=none
+"hi PreProc      guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
+"hi Number       guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
+"hi Special      guifg=#e7f6da gui=none ctermfg=194 ctermbg=none cterm=none
+"hi Class        guifg=#fff000 gui=none ctermfg=194 ctermbg=none cterm=none
+hi Class       guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
+
 
 " Set extra options when running in GUI mode
 if has("gui_running")
     set guioptions-=T
-    set guioptions+=e
-    set t_Co=256
+    set guioptions-=e
     set guitablabel=%M\ %t
+    "the cursor color in normal mode
+    hi Cursor guifg=White guibg=green
+
+    "the cursor color in insert mode
+    hi iCursor guifg=White guibg=red
+
+    "the cursor shape in normal visual command mode
+    set guicursor=n-v:block-Cursor
+
+    "the cursor shape in insert, command, and command- insert mode
+    set guicursor+=i-c-ci:ver25-iCursor
+
+    "the cursor shape in operator mode
+    set guicursor+=o:ver100-iCursor
+
+    "the cursor shape in replace mode
+    set guicursor+=r-cr:hor20-iCursor
+
+    "disable cursor blinking
+    set guicursor+=a:blinkon0
 endif
 
 " Set utf8 as standard encoding and en_US as the standard language
@@ -142,7 +195,6 @@ set encoding=utf8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
@@ -192,8 +244,7 @@ map j gj
 map k gk
 
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-map <space> /
-map <c-space> ?
+nnoremap <space> <PageDown>
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
@@ -223,18 +274,18 @@ map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers 
+" Specify the behavior when switching between buffers
 try
-  set switchbuf=useopen,usetab,newtab
-  set stal=2
+    set switchbuf=useopen,usetab,newtab
+    set stal=2
 catch
 endtry
 
 " Return to last edit position when opening files (You want this!)
 autocmd BufReadPost *
-     \ if line("'\"") > 0 && line("'\"") <= line("$") |
-     \   exe "normal! g`\"" |
-     \ endif
+            \ if line("'\"") > 0 && line("'\"") <= line("$") |
+            \   exe "normal! g`\"" |
+            \ endif
 " Remember info about open buffers on close
 set viminfo^=%
 
@@ -242,8 +293,8 @@ set viminfo^=%
 """"""""""""""""""""""""""""""
 " => Status line
 """"""""""""""""""""""""""""""
-" Always show the status line
-set laststatus=2
+" Only show the status line more than one window
+set laststatus=1
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
@@ -252,30 +303,37 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remap VIM 0 to first non-blank character
-map 0 ^
 
-" Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
+" Move a line of text using ALT+[jk] or Command+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 if has("mac") || has("macunix")
-  nmap <D-j> <M-j>
-  nmap <D-k> <M-k>
-  vmap <D-j> <M-j>
-  vmap <D-k> <M-k>
+    nmap <D-j> <M-j>
+    nmap <D-k> <M-k>
+    vmap <D-j> <M-j>
+    vmap <D-k> <M-k>
 endif
+
 
 " Delete trailing white space on save, useful for Python and CoffeeScript ;)
 func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
+    exe "normal mz"
+    %s/\s\+$//ge
+
+    "format cpp files and auto complete header files
+    if &filetype == 'cpp'
+        exe 'normal! gg=G'
+        exe 'ruby CppAutoInclude::process'
+    endif
+
+    exe "normal `z"
 endfunc
-autocmd BufWrite *.py :call DeleteTrailingWS()
-autocmd BufWrite *.coffee :call DeleteTrailingWS()
+"autocmd BufWrite *.py :call DeleteTrailingWS()
+"autocmd BufWrite *.coffee :call DeleteTrailingWS()
+autocmd BufWrite * :call DeleteTrailingWS()
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -285,7 +343,7 @@ autocmd BufWrite *.coffee :call DeleteTrailingWS()
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
 " Open vimgrep and put the cursor in the right position
-map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+map <leader>vg :vimgrep // **/*.<left><left><left><left><left><left><left>
 
 " Vimgreps in the current file
 map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
@@ -304,7 +362,7 @@ vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
 " To go to the previous search results do:
 "   <leader>p
 "
-map <leader>cc :botright cope<cr>
+"map <leader>cc :botright cope<cr>
 map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
 map <leader>n :cn<cr>
 map <leader>p :cp<cr>
@@ -379,26 +437,367 @@ endfunction
 " Don't close window, when deleting a buffer
 command! Bclose call <SID>BufcloseCloseIt()
 function! <SID>BufcloseCloseIt()
-   let l:currentBufNum = bufnr("%")
-   let l:alternateBufNum = bufnr("#")
+    let l:currentBufNum = bufnr("%")
+    let l:alternateBufNum = bufnr("#")
 
-   if buflisted(l:alternateBufNum)
-     buffer #
-   else
-     bnext
-   endif
+    if buflisted(l:alternateBufNum)
+        buffer #
+    else
+        bnext
+    endif
 
-   if bufnr("%") == l:currentBufNum
-     new
-   endif
+    if bufnr("%") == l:currentBufNum
+        new
+    endif
 
-   if buflisted(l:currentBufNum)
-     execute("bdelete! ".l:currentBufNum)
-   endif
+    if buflisted(l:currentBufNum)
+        execute("bdelete! ".l:currentBufNum)
+    endif
 endfunction
 
-nmap lb 0
-nmap le $
+execute pathogen#infect()
 nmap <Leader>q :q<CR>
 
-execute pathogen#infect()
+
+" show buffer explorer
+nnoremap <leader>b :BufExplorerHorizontalSplit<CR>
+
+" 设置插件 indexer 调用 ctags 的参数
+" 默认 --c++-kinds=+p+l，重新设置为 --c++-kinds=+p+l+x+c+d+e+f+g+m+n+s+t+u+v
+" 默认 --fields=+iaS 不满足 YCM 要求，需改为 --fields=+iaSl
+let g:indexer_ctagsCommandLineOptions="--c++-kinds=+p+l+x+c+d+e+f+g+m+n+s+t+u+v --fields=+iaSl --extra=+q"
+
+" set listchars=tab:t-,trail:-
+" 在normal 和visual 模式下，使用tab和shift+tab 缩进代码
+nnoremap <tab> v>
+nnoremap <s-tab> v<
+vnoremap <tab>   >gv
+vnoremap <s-tab> <gv
+vnoremap / y/<c-r>"<cr>
+
+nnoremap <leader>bl :BufExplorerHorizontalSplit<CR>
+
+" 定义F3 打开文件浏览窗口
+map <F3> :NERDTreeToggle<CR>
+map <F7> :FufTaggedFile<CR>
+map <F8> :FufTag<CR>
+map <F2> :TagbarToggle<CR>
+inoremap <F3> :NERDTreeToggle<CR>
+inoremap <F7> :FufTaggedFile<CR>
+inoremap <F8> :FufTag<CR>
+inoremap <F2> :TagbarToggle<CR>
+
+
+" 设置 tagbar 子窗口的位置出现在主编辑区的左边
+let tagbar_right=1
+" 设置显示／隐藏标签列表子窗口的快捷键。速记：tag list
+nnoremap <Leader>tl :TagbarToggle<CR>
+" 设置标签子窗口的宽度
+let tagbar_width=32
+" tagbar 子窗口中显示冗余帮助信息
+let g:tagbar_compact=0
+" 设置 ctags 对哪些代码元素生成标签
+let g:tagbar_type_cpp = {
+            \ 'ctagstype' : 'c++',
+            \ 'kinds'     : [
+            \ 'd:macros:1',
+            \ 'g:enums',
+            \ 't:typedefs:0:0',
+            \ 'e:enumerators:0:0',
+            \ 'n:namespaces',
+            \ 'c:classes',
+            \ 's:structs',
+            \ 'u:unions',
+            \ 'f:functions',
+            \ 'm:members:0:0',
+            \ 'v:global:0:0',
+            \ 'x:external:0:0',
+            \ ],
+            \ 'sro'        : '::',
+            \ 'kind2scope' : {
+            \ 'g' : 'enum',
+            \ 'n' : 'namespace',
+            \ 'c' : 'class',
+            \ 's' : 'struct',
+            \ 'u' : 'union'
+            \ },
+            \ 'scope2kind' : {
+            \ 'enum'      : 'g',
+            \ 'namespace' : 'n',
+            \ 'class'     : 'c',
+            \ 'struct'    : 's',
+            \ 'union'     : 'u'
+            \ }
+            \ }
+" <<
+
+" >>
+" 库信息参考
+
+" 启用:Man命令查看各类man信息
+source $VIMRUNTIME/ftplugin/man.vim
+
+" 定义:Man命令查看各类man信息的快捷键
+nmap <Leader>man :Man 3 <cword><CR>
+
+" <<
+
+" >>
+" 工程文件浏览
+
+" 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
+nmap <Leader>fl :NERDTreeToggle<CR>
+
+
+" 设置 NERDTree 子窗口宽度
+let NERDTreeWinSize=32
+" 设置 NERDTree 子窗口位置
+let NERDTreeWinPos="left"
+" 不显示隐藏文件
+let NERDTreeShowHidden=0
+" NERDTree 子窗口中不显示冗余帮助信息
+let NERDTreeMinimalUI=0
+" 删除文件时自动删除文件对应 buffer
+let NERDTreeAutoDeleteBuffer=1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""实用设置
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"当打开vim且没有文件时自动打开NERDTree
+"autocmd vimenter * if !argc() | NERDTree | endif
+" 只剩 NERDTree时自动关闭
+"autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+autocmd FileType cpp :setlocal equalprg=clang-format\ -style=\"\{BasedOnStyle:\ llvm,\ IndentWidth:\ 4\}\"
+" autocmd FileType cpp <buffer> :inoremap " "";<Left><Left>
+" autocmd FileType cpp <buffer> :inoremap ( ();<Left><Left>
+" autocmd FileType cpp <buffer> :inoremap ' '';<Left><Left>
+" autocmd FileType cpp <buffer> :inoremap [ [];<Left><Left>
+" autocmd FileType cpp <buffer> :inoremap { {<CR><Tab><CR>};<Up>
+" autocmd FileType cpp <buffer> :inoremap .<Space> ->
+"autocmd FileType cpp :inoremap try<Space> try<Space>{<CR><CR>}<Space>catch<Space>(<Space>){<CR>};<Up><Up>
+"autocmd FileType cpp :inoremap for<Space> for<Space>(int<Space>i<Space>=<Space>0;<Space>i<Space><<Space>; i++){<CR>};<Up><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Esc>
+"autocmd FileType cpp :inoremap if<Space> if<Space>(<Space><Space>)<Space>{<CR>};<Up><Right><Right><Right>
+"autocmd FileType cpp :inoremap el<Space> elseif<Space>(<Space><Space>)<Space>{<CR>};<Up><Right><Right><Right><Right><Right><Right><Right>
+"autocmd FileType cpp :inoremap sw<Space> switch<Space>(<Space><Space>)<Space>{<CR>case:<CR>break;<CR>case:<CR>break;<CR>default:<CR>break;};<Up><Up><Up><Up><Up><Up><Right>
+"autocmd FileType cpp :inoremap inc<Space> #include<Space>""<Left>
+"autocmd FileType cpp :inoremap incl<Space> #include<Space><><Left>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""新文件标题
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"新建.c,.h,.sh,.java文件，自动插入文件头
+autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java,*.py exec ":call SetTitle()"
+""定义函数SetTitle，自动插入文件头
+func! SetTitle()
+    "如果文件类型为.sh文件
+    if &filetype == 'sh'
+        call setline(1,"\#!/bin/bash")
+        call append(line("."), "")
+    elseif &filetype == 'python'
+        call setline(1,"#!/usr/bin/env python")
+        call append(line("."),"# coding=utf-8")
+        call append(line(".")+1, "")
+        "    elseif &filetype == 'mkd'
+        "        call setline(1,"<head><meta charset=\"UTF-8\"></head>")
+    else
+        call setline(1,          "/*************************************************************************")
+        call append(line("."),   "  File Name: ".expand("%"))
+        call append(line(".")+1, "  Author: Qi Wang")
+        call append(line(".")+2, "  Mail: billywq@163.com ")
+        call append(line(".")+3, "  Created Time: ".strftime("%c"))
+        call append(line(".")+4, " ************************************************************************/")
+        call append(line(".")+5, "")
+    endif
+    if &filetype == 'cpp'
+        call append(line(".")+6, "#include<iostream>")
+        call append(line(".")+7, "")
+        call append(line(".")+8, "")
+        call append(line(".")+9, "using namespace std;")
+        call append(line(".")+10, "")
+        call append(line(".")+11,"class ".expand("%"))
+        call append(line(".")+12,"")
+    endif
+    if &filetype == 'c'
+        call append(line(".")+6, "#include<stdio.h>")
+        call append(line(".")+7, "")
+        call append(line(".")+8, "")
+        call append(line(".")+9, "int main(int args, char** argv) {")
+        call append(line(".")+10, "")
+        call append(line(".")+11, "    return 0")
+        call append(line(".")+12, "}")
+    endif
+    if &filetype == 'java'
+        call append(line(".")+6,"public class ".expand("%"))
+        call append(line(".")+7,"")
+    endif
+    "新建文件后，自动定位到文件末尾
+endfunc
+autocmd BufNewFile * normal G
+
+"C，C++ 按shift+F5编译
+map <s-F5> :call CompileGcc()<CR>
+"C，C++ 按F5编译运行
+imap <F5> <ESC>:call CompileRunGcc()<CR>
+map <F5> :call CompileRunGcc()<CR>
+func! CompileGcc()
+    exec "wa"
+    if (&filetype == 'c' || &filetype == 'cpp')
+        exec "!clang++ -c % "
+    endif
+endfunc
+
+func! CompileRunGcc()
+    exec "wa"
+    if (&filetype == 'c' || &filetype == 'cpp')
+        exec  "!rm -rf %<"
+        exec  "!clang++ % -w -o %< -std=c++11 -g -I /usr/lib/c++/v1/ -lc++ -lc++abi"
+        exec "!./%<"
+    elseif &filetype == 'java'
+        exec "!javac %"
+        exec "!time java %<"
+    elseif &filetype == 'sh'
+        :!time bash %
+    elseif &filetype == 'python'
+        exec "!time python2.7 %"
+    elseif &filetype == 'html'
+        exec "!firefox % &"
+    elseif &filetype == 'go'
+        "        exec "!go build %<"
+        exec "!time go run %"
+    elseif &filetype == 'mkd'
+        exec "!~/.vim/markdown.pl % > %.html &"
+        exec "!firefox %.html &"
+    endif
+endfunc
+
+let g:syntastic_error_symbol = '✗'
+let g:syntastic_warning_symbol = '⚠'
+
+" UltiSnips 的 tab 键与 YCM 冲突，重新设定
+let g:UltiSnipsExpandTrigger="<leader><tab>"
+let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
+let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
+"let g:UltiSnipsExpandTrigger="<tab>"
+"let g:UltiSnipsJumpForwardTrigger="<tab>"
+"let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" YCM 补全菜单配色
+" 菜单
+highlight Pmenu ctermfg=white ctermbg=blue guifg=#FD971F guibg=#1D1D1D
+" 选中项
+highlight PmenuSel ctermfg=white ctermbg=grey guifg=#AFD700 guibg=#106900
+
+" 补全功能在注释中同样有效
+let g:ycm_complete_in_comments=1
+" 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示
+let g:ycm_confirm_extra_conf=0
+" 开启 YCM 标签补全引擎
+let g:ycm_collect_identifiers_from_tags_files=1
+" 引入 C++ 标准库tags
+" set tags+=/usr/include/c++/4.2.1/stdcpp.tags
+
+let OmniCpp_DefaultNamespaces = ["_GLIBCXX_STD"]
+" YCM 集成 OmniCppComplete 补全引擎，设置其快捷键
+inoremap <leader>; <C-x><C-o>
+" 补全内容不以分割子窗口形式出现，只显示补全列表
+set completeopt-=preview
+" 从第一个键入字符就开始罗列匹配项
+let g:ycm_min_num_of_chars_for_completion=1
+" 禁止缓存匹配项，每次都重新生成匹配项
+let g:ycm_cache_omnifunc=0
+" 语法关键字补全
+let g:ycm_seed_identifiers_with_syntax=1
+
+
+
+" 使用 Grep.vim 插件在工程内全局查找，设置快捷键。快捷键速记法：search in project
+nnoremap <Leader>sp :Grep -ir<CR><CR><CR>
+" 使用 Grep.vim 插件在工程内全局查找，设置快捷键。快捷键速记法：search in buffer
+nnoremap <Leader>sb :GrepBuffer -ir<CR><CR>
+
+" 替换函数。参数说明：
+" confirm：是否替换前逐一确认
+" wholeword：是否整词匹配
+" replace：被替换字符串
+function! Replace(confirm, wholeword, replace)
+    wa
+    let flag = ''
+    if a:confirm
+        let flag .= 'gec'
+    else
+        let flag .= 'ge'
+    endif
+    let search = ''
+    if a:wholeword
+        let search .= '\<' . escape(expand('<cword>'), '/\.*$^~[') . '\>'
+    else
+        let search .= expand('<cword>')
+    endif
+    let replace = escape(a:replace, '/\&~')
+    execute 'argdo %s/' . search . '/' . replace . '/' . flag . '| update'
+endfunction
+
+" 不确认、非整词
+nnoremap <Leader>R :call Replace(0, 0, input('Replace '.expand('<cword>').' with: '))<CR>
+" 不确认、整词
+nnoremap <Leader>rw :call Replace(0, 1, input('Replace '.expand('<cword>').' with: '))<CR>
+" 确认、非整词
+nnoremap <Leader>rc :call Replace(1, 0, input('Replace '.expand('<cword>').' with: '))<CR>
+" 确认、整词
+nnoremap <Leader>rcw :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
+nnoremap <Leader>rwc :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
+
+"let g:clang_format#auto_format=1
+
+function! <SID>SetMainDefaults()
+
+    " your default options goes here!
+
+endfunction
+
+call <SID>SetMainDefaults()
+
+" initialize vimprj plugin
+call vimprj#init()
+
+" define a hook
+function! g:vimprj#dHooks['SetDefaultOptions']['main_options'](dParams)
+    call <SID>SetMainDefaults()
+endfunction
+
+
+set guifont=Courier\ New:h16
+
+
+unmap <C-i>
+
+set tags=~/.indexer_files_tags/i3_code_test
+
+" Ignore case when searching
+set ignorecase
+
+highlight StatusLine term=reverse cterm=reverse guifg=LightGreen guibg=grey30
+
+nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
+" 只能是 #include 或已打开的文件
+nnoremap <leader>g :YcmCompleter GoToDefinition<CR>
+
+" 全文查找替换
+map <C-h> :%s/
+imap <C-h> <Esc><C-H>
+vnoremap <C-h> y:%s/<c-r>"//g<Left><Left>
+
+set path+=/usr/local/include/
+
+inoremap jk <esc>
+cmap jk <esc>
+nmap <leader>g <C-]>
+
+let g:ycm_global_ycm_extra_conf = "~/i3-code-test/.ycm_extra_conf.py"
+
+autocmd FileType cpp let b:delimitMate_expand_space = 1
+autocmd FileType cpp let b:delimitMate_expand_cr = 2
+autocmd FileType cpp let b:delimitMate_jump_expansion = 1
+
