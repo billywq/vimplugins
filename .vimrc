@@ -1,4 +1,3 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Maintainer:
 "       Amir Salihefendic
 "       http://amix.dk - amix@amix.dk
@@ -56,6 +55,8 @@ filetype indent on
 " Set to auto read when a file is changed from the outside
 set autoread
 
+set number
+
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
 let mapleader = ";"
@@ -71,11 +72,11 @@ nmap <leader>w :w!<cr>
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
-" Turn on the WiLd menu
+" Turn on the Wild menu
 set wildmenu
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc
+set wildignore=*.o,*~,*.pyc,*.dSYM
 
 "Always show current position
 set ruler
@@ -123,8 +124,13 @@ set tm=500
 " Enable syntax highlighting
 syntax enable
 
-colorscheme desert
+" 设置状态栏主题风格
+"let g:Powerline_colorscheme='solarized256'
+
+"colorscheme desert
 set background=dark
+colorscheme blackboard
+
 set t_Co=256
 
     "the cursor color in normal mode
@@ -148,18 +154,25 @@ set t_Co=256
     "disable cursor blinking
     set guicursor+=a:blinkon0
 hi Comment      guifg=#dddddd gui=italic ctermfg=246 ctermbg=none cterm=NONE
+
 "hi Todo         guifg=#8f8f8f gui=italic ctermfg=245 ctermbg=none cterm=NONE
 "hi Constant     guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
 "hi String       guifg=#95e454 gui=italic ctermfg=113 ctermbg=none cterm=NONE
-hi Identifier   guifg=#cae682 gui=none ctermfg=150 ctermbg=none cterm=none
-hi Function     guifg=LightGreen   gui=none ctermfg=150 ctermbg=none cterm=none
-"hi Type         guifg=#cae682 gui=none ctermfg=150 ctermbg=none cterm=none
-"hi Statement    guifg=#8ac6f2 gui=none ctermfg=117 ctermbg=none cterm=none
+"hi Identifier   guifg=#cae682 gui=none ctermfg=150 ctermbg=none cterm=none
+
+hi Function     guifg=LightGreen   gui=none ctermfg=199 ctermbg=none cterm=none
+hi Type         guifg=#F589CA gui=none ctermfg=150 ctermbg=none cterm=none
+hi Statement    guifg=#8ac6f2 gui=none ctermfg=117 ctermbg=none cterm=none
 hi Keyword      guifg=#8ac6f2 gui=none ctermfg=117 ctermbg=none cterm=none
+hi Search       term=reverse ctermfg=7 ctermbg=9 guifg=wheat guibg=peru
+hi SpellCap     term=reverse ctermbg=9 gui=undercurl guisp=Yellow
+hi! link Search Todo
+
 "hi PreProc      guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
 "hi Number       guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
 "hi Special      guifg=#e7f6da gui=none ctermfg=194 ctermbg=none cterm=none
 "hi Class        guifg=#fff000 gui=none ctermfg=194 ctermbg=none cterm=none
+
 hi Class       guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
 
 
@@ -277,7 +290,7 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 " Specify the behavior when switching between buffers
 try
     set switchbuf=useopen,usetab,newtab
-    set stal=2
+    set showtabline=1
 catch
 endtry
 
@@ -294,7 +307,7 @@ set viminfo^=%
 " => Status line
 """"""""""""""""""""""""""""""
 " Only show the status line more than one window
-set laststatus=1
+set laststatus=2
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
@@ -315,6 +328,8 @@ if has("mac") || has("macunix")
     nmap <D-k> <M-k>
     vmap <D-j> <M-j>
     vmap <D-k> <M-k>
+    imap <D-v> "+p
+    imap <leader>p <esc>"+gpa
 endif
 
 
@@ -363,9 +378,13 @@ vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
 "   <leader>p
 "
 "map <leader>cc :botright cope<cr>
-map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
+"map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
 map <leader>n :cn<cr>
-map <leader>p :cp<cr>
+"map <leader>p :cp<cr>
+" 设置快捷键将选中文本块复制至系统剪贴板
+vnoremap <Leader>y "+y
+" 设置快捷键将系统剪贴板内容粘贴至 vim
+nmap <Leader>p "+p
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -454,6 +473,7 @@ function! <SID>BufcloseCloseIt()
         execute("bdelete! ".l:currentBufNum)
     endif
 endfunction
+
 
 execute pathogen#infect()
 nmap <Leader>q :q<CR>
@@ -568,13 +588,14 @@ let NERDTreeAutoDeleteBuffer=1
 " 只剩 NERDTree时自动关闭
 "autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
-autocmd FileType cpp :setlocal equalprg=clang-format\ -style=\"\{BasedOnStyle:\ llvm,\ IndentWidth:\ 4\}\"
+autocmd BufReadPost *.cpp,*.[ch] exec ":UpdateTypesFileOnly"
+autocmd FileType cpp :setlocal equalprg=clang-format\ -style=\"\{BasedOnStyle:\ llvm,\ IndentWidth:\ 4,MaxEmptyLinesToKeep:\ 2\}\"
 " autocmd FileType cpp <buffer> :inoremap " "";<Left><Left>
 " autocmd FileType cpp <buffer> :inoremap ( ();<Left><Left>
 " autocmd FileType cpp <buffer> :inoremap ' '';<Left><Left>
 " autocmd FileType cpp <buffer> :inoremap [ [];<Left><Left>
 " autocmd FileType cpp <buffer> :inoremap { {<CR><Tab><CR>};<Up>
-" autocmd FileType cpp <buffer> :inoremap .<Space> ->
+autocmd FileType cpp :inoremap <buffer> .<Space> ->
 "autocmd FileType cpp :inoremap try<Space> try<Space>{<CR><CR>}<Space>catch<Space>(<Space>){<CR>};<Up><Up>
 "autocmd FileType cpp :inoremap for<Space> for<Space>(int<Space>i<Space>=<Space>0;<Space>i<Space><<Space>; i++){<CR>};<Up><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Right><Esc>
 "autocmd FileType cpp :inoremap if<Space> if<Space>(<Space><Space>)<Space>{<CR>};<Up><Right><Right><Right>
@@ -604,23 +625,24 @@ func! SetTitle()
     else
         call setline(1,          "/*************************************************************************")
         call append(line("."),   "  File Name: ".expand("%"))
-        call append(line(".")+1, "  Author: Qi Wang")
-        call append(line(".")+2, "  Mail: billywq@163.com ")
-        call append(line(".")+3, "  Created Time: ".strftime("%c"))
+        call append(line(".")+1, "  Description: TODO")
+        call append(line(".")+2, "  )
+        call append(line(".")+3, "  )
         call append(line(".")+4, " ************************************************************************/")
         call append(line(".")+5, "")
     endif
     if &filetype == 'cpp'
-        call append(line(".")+6, "#include<iostream>")
+        call append(line(".")+6, "#include <iostream>")
         call append(line(".")+7, "")
         call append(line(".")+8, "")
         call append(line(".")+9, "using namespace std;")
         call append(line(".")+10, "")
-        call append(line(".")+11,"class ".expand("%"))
+        "call append(line(".")+11,"class ".expand("%<"))
+        call append(line(".")+11,"class Solution")
         call append(line(".")+12,"")
     endif
     if &filetype == 'c'
-        call append(line(".")+6, "#include<stdio.h>")
+        call append(line(".")+6, "#include <stdio.h>")
         call append(line(".")+7, "")
         call append(line(".")+8, "")
         call append(line(".")+9, "int main(int args, char** argv) {")
@@ -629,7 +651,7 @@ func! SetTitle()
         call append(line(".")+12, "}")
     endif
     if &filetype == 'java'
-        call append(line(".")+6,"public class ".expand("%"))
+        call append(line(".")+6,"public class ".expand("%<"))
         call append(line(".")+7,"")
     endif
     "新建文件后，自动定位到文件末尾
@@ -644,7 +666,7 @@ map <F5> :call CompileRunGcc()<CR>
 func! CompileGcc()
     exec "wa"
     if (&filetype == 'c' || &filetype == 'cpp')
-        exec "!clang++ -c % "
+        exec "!clang++ -o0 -c -std=c++1y -g -I /usr/lib/c++/v1/ % "
     endif
 endfunc
 
@@ -652,7 +674,7 @@ func! CompileRunGcc()
     exec "wa"
     if (&filetype == 'c' || &filetype == 'cpp')
         exec  "!rm -rf %<"
-        exec  "!clang++ % -w -o %< -std=c++11 -g -I /usr/lib/c++/v1/ -lc++ -lc++abi"
+        exec  "!clang++ % -o0 -w -o %< -std=c++1y -g -I /usr/lib/c++/v1/ -lc++ -lc++abi"
         exec "!./%<"
     elseif &filetype == 'java'
         exec "!javac %"
@@ -672,9 +694,6 @@ func! CompileRunGcc()
     endif
 endfunc
 
-let g:syntastic_error_symbol = '✗'
-let g:syntastic_warning_symbol = '⚠'
-
 " UltiSnips 的 tab 键与 YCM 冲突，重新设定
 let g:UltiSnipsExpandTrigger="<leader><tab>"
 let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
@@ -683,9 +702,14 @@ let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
 "let g:UltiSnipsJumpForwardTrigger="<tab>"
 "let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
+"let g:ycm_show_diagnostics_ui = 1
+
+let g:syntastic_error_symbol = '✗'
+let g:syntastic_warning_symbol = '⚠'
+
 " YCM 补全菜单配色
 " 菜单
-highlight Pmenu ctermfg=white ctermbg=blue guifg=#FD971F guibg=#1D1D1D
+highlight Pmenu ctermfg=white ctermbg=blue guifg=#FD971F guibg=#075BB5
 " 选中项
 highlight PmenuSel ctermfg=white ctermbg=grey guifg=#AFD700 guibg=#106900
 
@@ -768,12 +792,10 @@ function! g:vimprj#dHooks['SetDefaultOptions']['main_options'](dParams)
 endfunction
 
 
-set guifont=Courier\ New:h16
+set guifont=Courier\ New:h18
 
 
 unmap <C-i>
-
-set tags=~/.indexer_files_tags/i3_code_test
 
 " Ignore case when searching
 set ignorecase
@@ -782,7 +804,7 @@ highlight StatusLine term=reverse cterm=reverse guifg=LightGreen guibg=grey30
 
 nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
 " 只能是 #include 或已打开的文件
-nnoremap <leader>g :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>g :YcmCompleter GoTo<CR>
 
 " 全文查找替换
 map <C-h> :%s/
@@ -791,13 +813,38 @@ vnoremap <C-h> y:%s/<c-r>"//g<Left><Left>
 
 set path+=/usr/local/include/
 
+" map jk combination to enter normal mode
 inoremap jk <esc>
 cmap jk <esc>
-nmap <leader>g <C-]>
 
-let g:ycm_global_ycm_extra_conf = "~/i3-code-test/.ycm_extra_conf.py"
+let g:ycm_global_ycm_extra_conf = "/Users/qiwang/i3-code-test/.ycm_extra_conf.py"
 
 autocmd FileType cpp let b:delimitMate_expand_space = 1
 autocmd FileType cpp let b:delimitMate_expand_cr = 2
 autocmd FileType cpp let b:delimitMate_jump_expansion = 1
+
+autocmd FileType cpp set foldmethod=syntax
+
+set nofoldenable
+
+" enable backspace works in insert mode
+iunmap <c-h>
+
+set cscopequickfix=s-,c-,d-,i-,t-,e-
+
+" highlight syntax
+nmap <leader>u :UpdateTypesFileOnly<cr>
+
+" 在所有的模式下面打开鼠标。
+set mouse+=a
+"Fast reloading of the .vimrc
+map <silent> <leader>ss :source ~/.vimrc<cr>
+"Fast editing of .vimrc
+map <silent> <leader>ee :e ~/.vimrc<cr>
+
+" source .vimrc once modified
+autocmd! BufWritePost .vimrc source %
+
+let g:indentLine_enabled=0
+nnoremap <leader>ii :IndentLinesToggle<cr>
 
