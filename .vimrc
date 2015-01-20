@@ -117,6 +117,8 @@ set novisualbell
 set t_vb=
 set tm=500
 
+" show command key when typing command
+set showcmd
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
@@ -180,6 +182,8 @@ hi Class       guifg=#e5786d gui=none ctermfg=167 ctermbg=none cterm=none
 if has("gui_running")
     set guioptions-=T
     set guioptions-=e
+    set guioptions-=r
+    set guioptions-=L
     set guitablabel=%M\ %t
     "the cursor color in normal mode
     hi Cursor guifg=White guibg=green
@@ -322,14 +326,16 @@ nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+" paste the text of last deleted or yanked
+imap <leader>p <c-r>"
 
 if has("mac") || has("macunix")
     nmap <D-j> <M-j>
     nmap <D-k> <M-k>
     vmap <D-j> <M-j>
     vmap <D-k> <M-k>
+    " paste the text in clipboard
     imap <D-v> "+p
-    imap <leader>p <esc>"+gpa
 endif
 
 
@@ -792,8 +798,9 @@ function! g:vimprj#dHooks['SetDefaultOptions']['main_options'](dParams)
 endfunction
 
 
-set guifont=Courier\ New:h18
-
+"set guifont=Courier\ New:h18
+set guifont=Monaco:h16
+"set guifont=Menlo\ Regular:h16
 
 unmap <C-i>
 
@@ -848,3 +855,24 @@ autocmd! BufWritePost .vimrc source %
 let g:indentLine_enabled=0
 nnoremap <leader>ii :IndentLinesToggle<cr>
 
+" Do parameter completion
+set conceallevel=2
+set concealcursor=vin
+let g:clang_snippets=1
+let g:clang_conceal_snippets=1
+let g:clang_snippets_engine='clang_complete'
+
+" Complete options (disable preview scratch window, longest removed to aways show menu)
+set completeopt=menu,menuone
+
+" Limit popup menu height
+set pumheight=20
+
+" SuperTab completion fall-back
+let g:SuperTabDefaultCompletionType='<c-x><c-u><c-p>'
+
+
+nnoremap <leader>o :FufTaggedFile<cr>
+nnoremap <leader>s :FufTag<cr>
+
+nnoremap <leader>/ :LustyBufferGrep<cr>
